@@ -15,6 +15,7 @@ import 'package:objectbox/objectbox.dart';
 import 'package:objectbox_flutter_libs/objectbox_flutter_libs.dart';
 
 import 'crud/entities/person.dart';
+import 'query_builder/entities/motor_cycle.dart';
 
 export 'package:objectbox/objectbox.dart'; // so that callers only have to import this file
 
@@ -33,6 +34,36 @@ final _entities = <ModelEntity>[
         ModelProperty(
             id: const IdUid(2, 4059369099839415075),
             name: 'name',
+            type: 9,
+            flags: 0)
+      ],
+      relations: <ModelRelation>[],
+      backlinks: <ModelBacklink>[]),
+  ModelEntity(
+      id: const IdUid(2, 6608405557237770385),
+      name: 'MotorCycle',
+      lastPropertyId: const IdUid(4, 1276955091263858364),
+      flags: 0,
+      properties: <ModelProperty>[
+        ModelProperty(
+            id: const IdUid(1, 1584732101324358645),
+            name: 'motorcycleId',
+            type: 6,
+            flags: 1),
+        ModelProperty(
+            id: const IdUid(2, 2235527276287615992),
+            name: 'serialNumber',
+            type: 9,
+            flags: 2080,
+            indexId: const IdUid(1, 2023347072540181795)),
+        ModelProperty(
+            id: const IdUid(3, 2395857057928376758),
+            name: 'name',
+            type: 9,
+            flags: 0),
+        ModelProperty(
+            id: const IdUid(4, 1276955091263858364),
+            name: 'releaseYear',
             type: 9,
             flags: 0)
       ],
@@ -67,8 +98,8 @@ Future<Store> openStore(
 ModelDefinition getObjectBoxModel() {
   final model = ModelInfo(
       entities: _entities,
-      lastEntityId: const IdUid(1, 5811696278053571529),
-      lastIndexId: const IdUid(0, 0),
+      lastEntityId: const IdUid(2, 6608405557237770385),
+      lastIndexId: const IdUid(1, 2023347072540181795),
       lastRelationId: const IdUid(0, 0),
       lastSequenceId: const IdUid(0, 0),
       retiredEntityUids: const [],
@@ -106,6 +137,47 @@ ModelDefinition getObjectBoxModel() {
           final object = Person(id: idParam, name: nameParam);
 
           return object;
+        }),
+    MotorCycle: EntityDefinition<MotorCycle>(
+        model: _entities[1],
+        toOneRelations: (MotorCycle object) => [],
+        toManyRelations: (MotorCycle object) => {},
+        getId: (MotorCycle object) => object.motorcycleId,
+        setId: (MotorCycle object, int id) {
+          object.motorcycleId = id;
+        },
+        objectToFB: (MotorCycle object, fb.Builder fbb) {
+          final serialNumberOffset = fbb.writeString(object.serialNumber);
+          final nameOffset = fbb.writeString(object.name);
+          final releaseYearOffset = fbb.writeString(object.releaseYear);
+          fbb.startTable(5);
+          fbb.addInt64(0, object.motorcycleId);
+          fbb.addOffset(1, serialNumberOffset);
+          fbb.addOffset(2, nameOffset);
+          fbb.addOffset(3, releaseYearOffset);
+          fbb.finish(fbb.endTable());
+          return object.motorcycleId;
+        },
+        objectFromFB: (Store store, ByteData fbData) {
+          final buffer = fb.BufferContext(fbData);
+          final rootOffset = buffer.derefObject(0);
+          final motorcycleIdParam =
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
+          final serialNumberParam =
+              const fb.StringReader(asciiOptimization: true)
+                  .vTableGet(buffer, rootOffset, 6, '');
+          final nameParam = const fb.StringReader(asciiOptimization: true)
+              .vTableGet(buffer, rootOffset, 8, '');
+          final releaseYearParam =
+              const fb.StringReader(asciiOptimization: true)
+                  .vTableGet(buffer, rootOffset, 10, '');
+          final object = MotorCycle(
+              motorcycleId: motorcycleIdParam,
+              serialNumber: serialNumberParam,
+              name: nameParam,
+              releaseYear: releaseYearParam);
+
+          return object;
         })
   };
 
@@ -119,4 +191,23 @@ class Person_ {
 
   /// see [Person.name]
   static final name = QueryStringProperty<Person>(_entities[0].properties[1]);
+}
+
+/// [MotorCycle] entity fields to define ObjectBox queries.
+class MotorCycle_ {
+  /// see [MotorCycle.motorcycleId]
+  static final motorcycleId =
+      QueryIntegerProperty<MotorCycle>(_entities[1].properties[0]);
+
+  /// see [MotorCycle.serialNumber]
+  static final serialNumber =
+      QueryStringProperty<MotorCycle>(_entities[1].properties[1]);
+
+  /// see [MotorCycle.name]
+  static final name =
+      QueryStringProperty<MotorCycle>(_entities[1].properties[2]);
+
+  /// see [MotorCycle.releaseYear]
+  static final releaseYear =
+      QueryStringProperty<MotorCycle>(_entities[1].properties[3]);
 }

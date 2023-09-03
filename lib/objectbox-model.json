@@ -21,10 +21,41 @@
         }
       ],
       "relations": []
+    },
+    {
+      "id": "2:6608405557237770385",
+      "lastPropertyId": "4:1276955091263858364",
+      "name": "MotorCycle",
+      "properties": [
+        {
+          "id": "1:1584732101324358645",
+          "name": "motorcycleId",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:2235527276287615992",
+          "name": "serialNumber",
+          "type": 9,
+          "flags": 2080,
+          "indexId": "1:2023347072540181795"
+        },
+        {
+          "id": "3:2395857057928376758",
+          "name": "name",
+          "type": 9
+        },
+        {
+          "id": "4:1276955091263858364",
+          "name": "releaseYear",
+          "type": 9
+        }
+      ],
+      "relations": []
     }
   ],
-  "lastEntityId": "1:5811696278053571529",
-  "lastIndexId": "0:0",
+  "lastEntityId": "2:6608405557237770385",
+  "lastIndexId": "1:2023347072540181795",
   "lastRelationId": "0:0",
   "lastSequenceId": "0:0",
   "modelVersion": 5,
